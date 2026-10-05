@@ -1,0 +1,3 @@
+export(audit_python)
+export(audit_markdown)
+S3method(print,retiaudit_report)

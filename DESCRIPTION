@@ -1,0 +1,16 @@
+Package: retiaudit
+Title: Inspect Python Selection Hints Without Starting Python
+Version: 0.1.0
+Authors@R: person("Daiki", "Kumakura", email = "55353329+DaikiKumakura@users.noreply.github.com", role = c("aut", "cre"))
+Description: A read-only preflight for Python environment selection with
+    reticulate. Identifies explicit overrides, project-local environment hints,
+    and conflicts with a requested managed environment. Produces a report
+    that omits local paths and environment values. Does not initialize Python,
+    discover interpreters, install software, or modify configuration.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Depends: R (>= 4.1.0)
+Suggests: reticulate (>= 1.41.0), testthat (>= 3.0.0)
+Config/testthat/edition: 3
+URL: https://github.com/DaikiKumakura/retiaudit
+BugReports: https://github.com/DaikiKumakura/retiaudit/issues
