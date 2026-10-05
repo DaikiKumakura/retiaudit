@@ -6,6 +6,11 @@ Inspect the selection hints that can get in the way, before starting Python.
 `retiaudit` is a small, dependency-free R companion to reticulate. It reports
 visible overrides and project markers, with local paths and values omitted.
 
+If `py_require()` is followed by `ModuleNotFoundError`, start with the
+[reproduced failure, diagnosis and remedy](inst/examples/managed-selection.md).
+It shows when an explicit interpreter override prevents managed selection and
+how to choose a managed or existing-environment approach deliberately.
+
 ```r
 install.packages("remotes") # only needed for installation from GitHub
 remotes::install_github("DaikiKumakura/retiaudit")
