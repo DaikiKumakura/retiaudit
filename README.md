@@ -114,3 +114,7 @@ The latter discusses Python reproducibility across renv and managed environments
 retiaudit flags lockfile presence but does not solve that integration problem.
 
 MIT license. No affiliation with the reticulate project.
+
+## Related writing
+
+- [retiaudit on the author's site](https://daikikumakura.github.io/software/retiaudit.html): summary, installation and status.
