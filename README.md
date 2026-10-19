@@ -12,6 +12,10 @@ It shows when an explicit interpreter override prevents managed selection and
 how to choose a managed or existing-environment approach deliberately.
 
 ```r
+# Binary from R-universe
+install.packages("retiaudit", repos = c("https://daikikumakura.r-universe.dev", "https://cloud.r-project.org"))
+
+# Or from GitHub
 install.packages("remotes") # only needed for installation from GitHub
 remotes::install_github("DaikiKumakura/retiaudit")
 library(retiaudit)
