@@ -1,0 +1,24 @@
+url: https://daikikumakura.github.io/retiaudit/
+
+template:
+  bootstrap: 5
+
+home:
+  title: "retiaudit: inspect Python selection hints for reticulate without starting Python"
+  description: >
+    retiaudit is a read-only preflight for Python environment selection with
+    reticulate in R. It identifies explicit overrides, project-local
+    environment hints and conflicts with a requested managed environment,
+    without starting Python.
+
+navbar:
+  structure:
+    left: [intro, reference, news]
+    right: [search, github]
+
+reference:
+  - title: Audit
+    desc: Inspect the visible hints for the Python that reticulate would select, and format the result.
+    contents:
+      - audit_python
+      - audit_markdown

@@ -12,5 +12,5 @@ Encoding: UTF-8
 Depends: R (>= 4.1.0)
 Suggests: reticulate (>= 1.41.0), testthat (>= 3.0.0)
 Config/testthat/edition: 3
-URL: https://github.com/DaikiKumakura/retiaudit
+URL: https://daikikumakura.github.io/retiaudit/, https://github.com/DaikiKumakura/retiaudit
 BugReports: https://github.com/DaikiKumakura/retiaudit/issues
