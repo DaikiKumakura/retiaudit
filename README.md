@@ -3,6 +3,8 @@
 **Why is reticulate ignoring my managed Python requirements?**
 
 Inspect the selection hints that can get in the way, before starting Python.
+
+**Documentation:** [daikikumakura.github.io/retiaudit](https://daikikumakura.github.io/retiaudit/)
 `retiaudit` is a small, dependency-free R companion to reticulate. It reports
 visible overrides and project markers, with local paths and values omitted.
 
