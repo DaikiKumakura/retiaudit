@@ -1,5 +1,7 @@
 # retiaudit
 
+[![R-universe](https://daikikumakura.r-universe.dev/badges/retiaudit)](https://daikikumakura.r-universe.dev/retiaudit)
+
 **Why is reticulate ignoring my managed Python requirements?**
 
 Inspect the selection hints that can get in the way, before starting Python.
@@ -14,7 +16,7 @@ It shows when an explicit interpreter override prevents managed selection and
 how to choose a managed or existing-environment approach deliberately.
 
 ```r
-# Binary from R-universe
+# From R-universe (binaries where available)
 install.packages("retiaudit", repos = c("https://daikikumakura.r-universe.dev", "https://cloud.r-project.org"))
 
 # Or from GitHub
