@@ -1,5 +1,7 @@
 # retiaudit
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.24210476.svg)](https://doi.org/10.5281/zenodo.24210476)
+
 [![R-universe](https://daikikumakura.r-universe.dev/badges/retiaudit)](https://daikikumakura.r-universe.dev/retiaudit)
 
 **Why is reticulate ignoring my managed Python requirements?**
