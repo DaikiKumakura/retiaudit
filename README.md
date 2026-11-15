@@ -1,43 +1,61 @@
 # retiaudit
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.24210476.svg)](https://doi.org/10.5281/zenodo.24210476)
-
+<!-- badges: start -->
 [![R-universe](https://daikikumakura.r-universe.dev/badges/retiaudit)](https://daikikumakura.r-universe.dev/retiaudit)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.24210476.svg)](https://doi.org/10.5281/zenodo.24210476)
+<!-- badges: end -->
 
-**Why is reticulate ignoring my managed Python requirements?**
+**Why is reticulate ignoring my managed Python requirements? A preflight
+check of the settings that steer Python selection, run before Python starts.**
 
-Inspect the selection hints that can get in the way, before starting Python.
+You call `py_require()`, and then `import` fails with `ModuleNotFoundError`.
+Often an old setting, such as `RETICULATE_PYTHON` or an activated virtualenv,
+makes reticulate use a different Python. retiaudit lists the visible
+selection hints and checks them against what you intend:
 
-**Documentation:** [daikikumakura.github.io/retiaudit](https://daikikumakura.github.io/retiaudit/)
-`retiaudit` is a small, dependency-free R companion to reticulate. It reports
-visible overrides and project markers, with local paths and values omitted.
+- **Before Python starts.** It does not load reticulate, run its discovery,
+  start Python or run any file.
+- **Against your intent.** Say whether you want a managed environment
+  (`py_require()`) or an existing one, and it reports what conflicts.
+- **Safe to share.** Reports leave out environment values, local paths and
+  file contents.
+- **Small.** No dependencies; it reads only selected environment variables,
+  package metadata and whether files exist.
 
-If `py_require()` is followed by `ModuleNotFoundError`, start with the
-[reproduced failure, diagnosis and remedy](inst/examples/managed-selection.md).
-It shows when an explicit interpreter override prevents managed selection and
-how to choose a managed or existing-environment approach deliberately.
+**Documentation:** <https://daikikumakura.github.io/retiaudit/>
+
+## Installation
 
 ```r
-# From R-universe (binaries where available)
-install.packages("retiaudit", repos = c("https://daikikumakura.r-universe.dev", "https://cloud.r-project.org"))
-
-# Or from GitHub
-install.packages("remotes") # only needed for installation from GitHub
-remotes::install_github("DaikiKumakura/retiaudit")
-library(retiaudit)
-
-audit_python(intent = "managed")
+install.packages("retiaudit", repos = c(
+  "https://daikikumakura.r-universe.dev",
+  "https://cloud.r-project.org"
+))
 ```
 
-Alternatively, build the source archive with `R CMD build .` and install it with
-`install.packages("retiaudit_0.1.0.tar.gz", repos = NULL, type = "source")`.
-Not on CRAN. Initial version; feedback on real projects is welcome.
+Or from GitHub: `remotes::install_github("DaikiKumakura/retiaudit")`. Not on
+CRAN.
 
-## A reproducible example
+## Quick start
 
-Suppose an old setting points at a Python file while you intend to use
-`py_require()` with a managed environment. This synthetic example does not
-run that file or start Python:
+```r
+library(retiaudit)
+audit_python(intent = "managed")     # you use py_require()
+audit_python(intent = "existing", expected = "/path/to/python")
+```
+
+| Function | What it does |
+|---|---|
+| `audit_python(intent)` | Collects the hints and returns a report with findings (code and severity) |
+| `audit_markdown(report)` | Turns the report into Markdown to paste into an issue or a note |
+
+The printed report has three parts: the environment hints (set or not), the
+project markers (present or not), and the findings.
+
+## Example: an old override blocks the managed environment
+
+This synthetic example sets `RETICULATE_PYTHON` to a placeholder file; it
+does not run that file or start Python:
 
 ```r
 local({
@@ -53,78 +71,78 @@ local({
   report <- audit_python(intent = "managed")
   report$findings[, c("code", "severity")]
 })
-# Includes EXPLICIT_OVERRIDE_BLOCKS_MANAGED / warning
+#>                               code severity
+#> 1 EXPLICIT_OVERRIDE_BLOCKS_MANAGED  warning
 ```
 
-For an existing interpreter, you can also check an explicit override against
-the path you expect:
-
-```r
-report <- audit_python(intent = "existing", expected = "/path/to/python")
-```
-
-The audit checks file existence, not whether that file is a working Python
-interpreter. It never recommends deleting an environment or changes settings.
-Review findings and choose a policy deliberately in a fresh R session.
+The [reproduced failure, diagnosis and remedy](inst/examples/managed-selection.md)
+shows the whole case: the error, what retiaudit reports, and how to choose a
+managed or an existing environment deliberately.
 
 ## What it checks
 
-- Explicit interpreter and named-environment overrides.
-- Managed-environment enable/disable flags, with precedence considered.
-- Activated environments and project-local virtualenv markers.
-- Poetry/Pipenv markers, an interpreter fallback, and a default `r-reticulate` environment marker.
-- Missing interpreter files and disagreement with an optional expected path.
-- Presence of startup files and a renv lockfile, without reading their contents.
+| Hint | Examples |
+|---|---|
+| Explicit overrides | interpreter path, named environment |
+| Managed environments | enable and disable flags, with their precedence |
+| Active environments | activated virtualenv, project-local virtualenv folders |
+| Other markers | Poetry and Pipenv files, interpreter fallback, default `r-reticulate` environment |
+| Consistency | missing interpreter files, disagreement with an expected path |
+| Startup | presence of `.Rprofile`, `.Renviron` and `renv.lock` (contents are not read) |
+
+The audit checks that a file exists, not that it is a working Python. It
+never changes settings or recommends deleting an environment: review the
+findings and decide in a fresh R session.
 
 ## How it differs from reticulate's diagnostics
 
 | Tool | Purpose |
 | --- | --- |
-| `reticulate::py_config()` | Inspect the Python configuration; can initialize Python. |
-| `reticulate::py_discover_config()` | Discover a Python configuration without loading Python; discovery is still performed. |
-| `retiaudit::audit_python()` | Check visible selection hints against your intent, without loading reticulate or running discovery. |
+| `reticulate::py_config()` | Inspect the Python configuration; can initialize Python |
+| `reticulate::py_discover_config()` | Discover a configuration without loading Python; discovery still runs |
+| `retiaudit::audit_python()` | Check visible hints against your intent, without loading reticulate or running discovery |
 
-This complements the official diagnostics. It does not replace them or
-reimplement reticulate's full discovery algorithm.
+retiaudit complements the official diagnostics; it does not reimplement
+reticulate's discovery.
 
 ## Share a report
 
 ```r
 report <- audit_python(intent = "managed")
 cat(paste(audit_markdown(report), collapse = "\n"))
-# If you choose to save it:
 # writeLines(audit_markdown(report), "python-preflight.md")
 ```
 
-The returned object and Markdown omit environment values, local paths,
-startup-file contents, requirements and error traces. Fixed variable names,
-marker names, presence flags, and the installed reticulate version remain.
-Review any report before sharing. Do not append raw session dumps or secrets.
+The report keeps fixed variable names, marker names, presence flags and the
+reticulate version, and leaves out environment values, local paths,
+startup-file contents, requirements and error traces. Review it before
+sharing.
 
 ## Limits
 
-No network calls, subprocesses, environment changes, installation, file writes,
-startup-file execution, or reticulate namespace loading are performed by the
-audit. It reads only selected environment variables, package metadata and file
-existence. It does not observe `use_python()` requests, loaded Python state,
-delayed imports, global startup code, dependency availability or ABI compatibility.
-Auditing another project directory does not simulate starting R in that project.
-No findings means no **visible** conflict, not a working Python setup.
-Guidance targets reticulate 1.41+; older versions receive a warning.
+- No network calls, subprocesses, environment changes, installation, file
+  writes, startup-file execution or reticulate loading.
+- It does not see `use_python()` calls, a Python that is already loaded,
+  delayed imports, global startup code, package availability or ABI
+  compatibility.
+- Auditing another project folder does not simulate starting R there.
+- No findings means no **visible** conflict, not a working Python setup.
+- Written for reticulate 1.41 or later; older versions get a warning.
 
 ## Background
 
-The underlying problem is documented in
-[reticulate's selection guidance](https://rstudio.github.io/reticulate/articles/versions.html)
-and [managed requirements documentation](https://rstudio.github.io/reticulate/reference/py_require.html).
-Examples of related reports include
-[#1809](https://github.com/rstudio/reticulate/issues/1809) and
-[#1832](https://github.com/rstudio/reticulate/issues/1832).
-The latter discusses Python reproducibility across renv and managed environments;
-retiaudit flags lockfile presence but does not solve that integration problem.
+The problem is described in reticulate's
+[selection guidance](https://rstudio.github.io/reticulate/articles/versions.html)
+and [managed requirements documentation](https://rstudio.github.io/reticulate/reference/py_require.html);
+related reports include [rstudio/reticulate#1809](https://github.com/rstudio/reticulate/issues/1809)
+and [rstudio/reticulate#1832](https://github.com/rstudio/reticulate/issues/1832).
+retiaudit flags an renv lockfile but does not solve the integration of renv
+and managed environments.
 
-MIT license. No affiliation with the reticulate project.
+## Citation
 
-## Related writing
+Cite the archived version: <https://doi.org/10.5281/zenodo.24210476>.
 
-- [retiaudit on the author's site](https://daikikumakura.github.io/software/retiaudit.html): summary, installation and status.
+## License
+
+MIT. No affiliation with the reticulate project.
