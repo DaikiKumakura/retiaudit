@@ -75,7 +75,7 @@ local({
 #> 1 EXPLICIT_OVERRIDE_BLOCKS_MANAGED  warning
 ```
 
-The [reproduced failure, diagnosis and remedy](inst/examples/managed-selection.md)
+The [reproduced failure, diagnosis and remedy](https://github.com/DaikiKumakura/retiaudit/blob/main/inst/examples/managed-selection.md)
 shows the whole case: the error, what retiaudit reports, and how to choose a
 managed or an existing environment deliberately.
 
