@@ -10,8 +10,8 @@ version: "0.1.0"
 date-released: "2026-10-05"
 identifiers:
   - type: doi
-    value: "10.5281/zenodo.24210476"
-    description: "Archived release (Zenodo)"
+    value: "10.5281/zenodo.24210475"
+    description: "All archived releases (Zenodo concept DOI)"
 repository-code: "https://github.com/DaikiKumakura/retiaudit"
 url: "https://daikikumakura.github.io/software/retiaudit.html"
 license: MIT
