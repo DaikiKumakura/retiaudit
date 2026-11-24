@@ -2,6 +2,13 @@ url: https://daikikumakura.github.io/retiaudit/
 
 template:
   bootstrap: 5
+  bslib:
+    bg: "#ffffff"
+    fg: "#252525"
+    primary: "#25577b"
+    border-color: "#dddddd"
+    line-height-base: 1.65
+    headings-font-weight: 500
 
 home:
   title: "retiaudit: inspect Python selection hints for reticulate without starting Python"
@@ -12,9 +19,30 @@ home:
     without starting Python.
 
 navbar:
+  bg: light
+  type: light
   structure:
-    left: [intro, reference, news]
+    left: [start, reference, articles, news, downloads]
     right: [search, github]
+  components:
+    start:
+      text: Get started
+      menu:
+        - text: Install
+          href: "index.html#installation"
+        - text: First example
+          href: "index.html#quick-start"
+    downloads:
+      text: Downloads
+      menu:
+        - text: Release
+          href: "https://github.com/DaikiKumakura/retiaudit/releases/tag/v0.1.0"
+        - text: R-universe
+          href: "https://daikikumakura.r-universe.dev/retiaudit"
+        - text: Zenodo
+          href: "https://doi.org/10.5281/zenodo.24210476"
+        - text: Portfolio
+          href: "https://daikikumakura.github.io/software/retiaudit.html"
 
 reference:
   - title: Audit
