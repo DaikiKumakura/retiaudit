@@ -181,4 +181,6 @@ Cite the archived version: <https://doi.org/10.5281/zenodo.24210475>.
 
 ## License
 
-MIT. No affiliation with the reticulate project.
+This project is licensed under MIT. See [LICENSE.md](LICENSE.md) for the license terms.
+
+This project is independent of the reticulate project.
