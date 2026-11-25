@@ -36,6 +36,10 @@ audit_python(intent = "existing", expected = "/path/to/python")
 The printed report has three parts: the environment hints (set or not), the
 project markers (present or not), and the findings.
 
+## Documentation
+
+[Package website](https://daikikumakura.github.io/retiaudit/) · [Function reference](https://daikikumakura.github.io/retiaudit/reference/) · [Changelog](https://daikikumakura.github.io/retiaudit/news/) · [Releases](https://github.com/DaikiKumakura/retiaudit/releases) · [R-universe](https://daikikumakura.r-universe.dev/retiaudit)
+
 ## Overview
 
 <details>
@@ -58,10 +62,6 @@ selection hints and checks them against what you intend:
 **Documentation:** <https://daikikumakura.github.io/retiaudit/>
 
 </details>
-
-## Documentation
-
-[Function reference](https://daikikumakura.github.io/retiaudit/reference/) · [Changelog](https://daikikumakura.github.io/retiaudit/news/) · [Releases](https://github.com/DaikiKumakura/retiaudit/releases)
 
 ## Example: an old override blocks the managed environment
 
@@ -149,17 +149,6 @@ sharing.
 
 </details>
 
-## Limits
-
-- No network calls, subprocesses, environment changes, installation, file
-  writes, startup-file execution or reticulate loading.
-- It does not see `use_python()` calls, a Python that is already loaded,
-  delayed imports, global startup code, package availability or ABI
-  compatibility.
-- Auditing another project folder does not simulate starting R there.
-- No findings means no **visible** conflict, not a working Python setup.
-- Written for reticulate 1.41 or later; older versions get a warning.
-
 ## Background
 
 <details>
@@ -174,6 +163,19 @@ retiaudit flags an renv lockfile but does not solve the integration of renv
 and managed environments.
 
 </details>
+
+<a id="limits"></a>
+
+## Validation and limitations
+
+- No network calls, subprocesses, environment changes, installation, file
+  writes, startup-file execution or reticulate loading.
+- It does not see `use_python()` calls, a Python that is already loaded,
+  delayed imports, global startup code, package availability or ABI
+  compatibility.
+- Auditing another project folder does not simulate starting R there.
+- No findings means no **visible** conflict, not a working Python setup.
+- Written for reticulate 1.41 or later; older versions get a warning.
 
 ## Citation
 
