@@ -8,22 +8,6 @@
 **Why is reticulate ignoring my managed Python requirements? A preflight
 check of the settings that steer Python selection, run before Python starts.**
 
-You call `py_require()`, and then `import` fails with `ModuleNotFoundError`.
-Often an old setting, such as `RETICULATE_PYTHON` or an activated virtualenv,
-makes reticulate use a different Python. retiaudit lists the visible
-selection hints and checks them against what you intend:
-
-- **Before Python starts.** It does not load reticulate, run its discovery,
-  start Python or run any file.
-- **Against your intent.** Say whether you want a managed environment
-  (`py_require()`) or an existing one, and it reports what conflicts.
-- **Safe to share.** Reports leave out environment values, local paths and
-  file contents.
-- **Small.** No dependencies; it reads only selected environment variables,
-  package metadata and whether files exist.
-
-**Documentation:** <https://daikikumakura.github.io/retiaudit/>
-
 ## Installation
 
 ```r
@@ -52,7 +36,37 @@ audit_python(intent = "existing", expected = "/path/to/python")
 The printed report has three parts: the environment hints (set or not), the
 project markers (present or not), and the findings.
 
+## Overview
+
+<details>
+<summary>Show details</summary>
+
+You call `py_require()`, and then `import` fails with `ModuleNotFoundError`.
+Often an old setting, such as `RETICULATE_PYTHON` or an activated virtualenv,
+makes reticulate use a different Python. retiaudit lists the visible
+selection hints and checks them against what you intend:
+
+- **Before Python starts.** It does not load reticulate, run its discovery,
+  start Python or run any file.
+- **Against your intent.** Say whether you want a managed environment
+  (`py_require()`) or an existing one, and it reports what conflicts.
+- **Safe to share.** Reports leave out environment values, local paths and
+  file contents.
+- **Small.** No dependencies; it reads only selected environment variables,
+  package metadata and whether files exist.
+
+**Documentation:** <https://daikikumakura.github.io/retiaudit/>
+
+</details>
+
+## Documentation
+
+[Function reference](https://daikikumakura.github.io/retiaudit/reference/) · [Changelog](https://daikikumakura.github.io/retiaudit/news/) · [Releases](https://github.com/DaikiKumakura/retiaudit/releases)
+
 ## Example: an old override blocks the managed environment
+
+<details>
+<summary>Show details</summary>
 
 This synthetic example sets `RETICULATE_PYTHON` to a placeholder file; it
 does not run that file or start Python:
@@ -79,7 +93,12 @@ The [reproduced failure, diagnosis and remedy](https://github.com/DaikiKumakura/
 shows the whole case: the error, what retiaudit reports, and how to choose a
 managed or an existing environment deliberately.
 
+</details>
+
 ## What it checks
+
+<details>
+<summary>Show details</summary>
 
 | Hint | Examples |
 |---|---|
@@ -94,7 +113,12 @@ The audit checks that a file exists, not that it is a working Python. It
 never changes settings or recommends deleting an environment: review the
 findings and decide in a fresh R session.
 
+</details>
+
 ## How it differs from reticulate's diagnostics
+
+<details>
+<summary>Show details</summary>
 
 | Tool | Purpose |
 | --- | --- |
@@ -105,7 +129,12 @@ findings and decide in a fresh R session.
 retiaudit complements the official diagnostics; it does not reimplement
 reticulate's discovery.
 
+</details>
+
 ## Share a report
+
+<details>
+<summary>Show details</summary>
 
 ```r
 report <- audit_python(intent = "managed")
@@ -117,6 +146,8 @@ The report keeps fixed variable names, marker names, presence flags and the
 reticulate version, and leaves out environment values, local paths,
 startup-file contents, requirements and error traces. Review it before
 sharing.
+
+</details>
 
 ## Limits
 
@@ -131,6 +162,9 @@ sharing.
 
 ## Background
 
+<details>
+<summary>Show details</summary>
+
 The problem is described in reticulate's
 [selection guidance](https://rstudio.github.io/reticulate/articles/versions.html)
 and [managed requirements documentation](https://rstudio.github.io/reticulate/reference/py_require.html);
@@ -138,6 +172,8 @@ related reports include [rstudio/reticulate#1809](https://github.com/rstudio/ret
 and [rstudio/reticulate#1832](https://github.com/rstudio/reticulate/issues/1832).
 retiaudit flags an renv lockfile but does not solve the integration of renv
 and managed environments.
+
+</details>
 
 ## Citation
 
