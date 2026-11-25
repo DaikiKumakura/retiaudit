@@ -179,7 +179,9 @@ and managed environments.
 
 ## Citation
 
-Cite the archived version: <https://doi.org/10.5281/zenodo.24210475>.
+Kumakura, D. (2026). *retiaudit: Inspect Python Selection Hints Without Starting Python* [Software]. [DOI: 10.5281/zenodo.24210475](https://doi.org/10.5281/zenodo.24210475).
+
+Citation metadata: [CITATION.cff](CITATION.cff).
 
 ## License
 
