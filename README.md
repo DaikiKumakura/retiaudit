@@ -19,11 +19,37 @@ install.packages("retiaudit", repos = c(
 
 ## Quick start
 
+Run it before the first `reticulate` call, say what you intend, and read the findings. This example sets
+`RETICULATE_PYTHON` to a placeholder file (it does not run that file or start Python), then audits a script
+that wants a managed environment from `py_require()`:
+
 ```r
 library(retiaudit)
-audit_python(intent = "managed")     # you use py_require()
-audit_python(intent = "existing", expected = "/path/to/python")
+
+local({
+  previous <- Sys.getenv("RETICULATE_PYTHON", unset = NA_character_)
+  placeholder <- tempfile()
+  file.create(placeholder)
+  on.exit({
+    unlink(placeholder)
+    if (is.na(previous)) Sys.unsetenv("RETICULATE_PYTHON")
+    else Sys.setenv(RETICULATE_PYTHON = previous)
+  })
+  Sys.setenv(RETICULATE_PYTHON = placeholder)
+  report <- audit_python(intent = "managed")      # you use py_require()
+  report$findings[, c("code", "severity")]
+})
 ```
+
+```text
+                              code severity
+1 EXPLICIT_OVERRIDE_BLOCKS_MANAGED  warning
+```
+
+The finding says that the override would stop `py_require()` from choosing the environment. On your own
+machine, call it without the setup: `audit_python(intent = "managed")`, or
+`audit_python(intent = "existing", expected = "/path/to/python")` if you want a specific interpreter. With
+nothing in the way it prints `No visible conflict detected. This does not establish that Python will work.`
 
 ## Documentation
 
