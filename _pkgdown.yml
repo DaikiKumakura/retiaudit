@@ -53,3 +53,9 @@ reference:
   - title: Package
     contents:
       - retiaudit-package
+
+articles:
+  - title: Articles
+    navbar: ~
+    contents:
+      - articles/tutorial

@@ -1,0 +1,139 @@
+---
+title: "Find out why reticulate picked the wrong Python"
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(eval = FALSE)
+```
+
+You call `py_require("numpy")`, and then `import numpy` fails, or `py_config()` shows an interpreter you
+never chose. reticulate picks a Python from a list of settings in a fixed order, and an old setting earlier in
+the list wins. retiaudit reads those settings **before Python starts**, compares them with what you intend, and
+tells you which one is in the way. This page runs it on five situations. Every finding below was produced by
+running the code.
+
+## 1. The two questions
+
+```{r}
+library(retiaudit)
+audit_python(intent = "managed")                                   # I want py_require()
+audit_python(intent = "existing", expected = "/path/to/python")    # I want this interpreter
+```
+
+`intent` is the one thing the package cannot see for itself, so you say it:
+
+| `intent` | You want | It looks for |
+|---|---|---|
+| `"managed"` | reticulate to build an environment from `py_require()` | settings that would take precedence over it |
+| `"existing"` | a specific interpreter, given in `expected` | a missing interpreter, or settings that point elsewhere |
+| `"inspect"` (default) | to see the hints with no intent | only problems that do not depend on intent, for example `RETICULATE_PYTHON` pointing to a file that does not exist (`INVALID_PYTHON_OVERRIDE`, severity `error`) |
+
+It reads a few environment variables, a few project files (whether they exist) and the reticulate version. It
+does not load reticulate, start Python or run any file.
+
+## 2. Nothing in the way
+
+```{r}
+report <- audit_python(intent = "managed")
+report$findings
+```
+
+```text
+[1] code     severity message  action
+<0 rows> (or 0-length row.names)
+```
+
+No finding: `print(report)` says *No visible conflict detected. This does not establish that Python will work.*
+The check sees settings, not whether the environment has your packages.
+
+## 3. An old override blocks the managed environment
+
+`RETICULATE_PYTHON` is the strongest setting. If it is set, `py_require()` has no effect. Here it points to a
+placeholder file (the file is never run):
+
+```{r}
+placeholder <- tempfile(); file.create(placeholder)
+Sys.setenv(RETICULATE_PYTHON = placeholder)
+
+report <- audit_python(intent = "managed")
+report$findings
+```
+
+```text
+                              code severity                                                                   message
+1 EXPLICIT_OVERRIDE_BLOCKS_MANAGED  warning An explicit interpreter override takes precedence over managed selection.
+                                                                                      action
+1 In a fresh R session, remove the override or deliberately set RETICULATE_PYTHON='managed'.
+```
+
+Each finding has a `code`, a `severity` (`info`, `warning`, `error`), a `message` and an `action`. Here the
+action is the fix: remove the variable (look in `.Renviron`, the shell profile or the IDE's project settings),
+or set it to `"managed"` on purpose, and start a fresh R session.
+
+## 4. An activated virtual environment
+
+```{r}
+Sys.unsetenv("RETICULATE_PYTHON")
+Sys.setenv(VIRTUAL_ENV = tempdir())      # what an activated environment looks like
+
+audit_python(intent = "managed")$findings
+```
+
+```text
+                          code severity                                                                                     message
+1 ACTIVATED_ENV_BEFORE_MANAGED  warning An activated virtual environment is a higher-priority selection hint than managed fallback.
+                                                                                       action
+1 Check terminal or IDE activation; use a fresh session with an intentional selection policy.
+```
+
+This is the case where nothing in your R code changed but the terminal or the IDE was started from an activated
+environment.
+
+## 5. The interpreter you expect is not there
+
+```{r}
+Sys.unsetenv("VIRTUAL_ENV")
+audit_python(intent = "existing", expected = "/opt/python/bin/python")$findings
+```
+
+```text
+                          code severity                                           message                                                   action
+1 EXPECTED_INTERPRETER_MISSING    error The expected interpreter is not an existing file. Check the expected interpreter path before using Python.
+```
+
+(The same call with a path that exists gives no finding.) This one has severity `error`: the path you gave is
+not a file.
+
+## 6. A project that carries its own tooling
+
+```{r}
+audit_python(project = "path/to/project", intent = "managed")$findings
+```
+
+```text
+                  code severity                                                                                         message
+1 PROJECT_TOOLING_HINT     info A Poetry or Pipenv marker is present; a corresponding environment can precede managed fallback.
+                                                                                                               action
+1 Verify the environment using the relevant project tool; marker presence alone does not prove an environment exists.
+```
+
+This is what a project with a `pyproject.toml` returns. The file does not prove that a Poetry environment
+exists, so the finding is `info`: it asks you to look, it does not say something is wrong. `report$markers` lists
+every project file that was checked and whether it is present.
+
+## 7. Share the report
+
+```{r}
+writeLines(audit_markdown(report), "python-preflight.md")
+```
+
+The Markdown has the intent, the environment hints, the project markers and the findings, ready to paste into
+an issue. It **leaves out** the values of the variables (`RETICULATE_PYTHON` appears as `Set: TRUE`, `value
+omitted`), local paths, startup-file contents and package requirements, so you can share it. Read it once
+before you do.
+
+## 8. What it does not do
+
+It does not find out which Python a later session will start, check that the environment has your packages, or
+fix anything. It narrows the question to the settings you can see; the next step is the finding's `action`, and
+then a fresh R session.
