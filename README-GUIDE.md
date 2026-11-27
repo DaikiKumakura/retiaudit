@@ -2,6 +2,7 @@
 
 <!-- badges: start -->
 [![R-universe](https://daikikumakura.r-universe.dev/badges/retiaudit)](https://daikikumakura.r-universe.dev/retiaudit)
+[![R-CMD-check](https://github.com/DaikiKumakura/retiaudit/actions/workflows/check.yaml/badge.svg)](https://github.com/DaikiKumakura/retiaudit/actions/workflows/check.yaml)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.24210475.svg)](https://doi.org/10.5281/zenodo.24210475)
 <!-- badges: end -->
 
